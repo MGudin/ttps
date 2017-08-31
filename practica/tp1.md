@@ -119,3 +119,61 @@ No se encuentra el repo.
     
 13. Actualizá el contenido de tu copia local mediante el subcomando
     pull.
+
+### Ruby. Sintaxis y tipos basicos  ###
+
+1. Investigá y probá en un intérprete de Ruby cómo crear objetos de los siguientes tipos
+básicos usando literales y usando el constructor new (cuando sea posible):
+
+- Arreglo (Array)
+
+[De la Documentacion:](https://ruby-doc.org/core-2.4.1/Array.html)
+
+Un arreglo puede ser creado en forma literal, encerrando sus
+elementos(que pueden ser de distinto tipo) entre corchetes.
+
+```ruby
+["uno", 2.0 , [3, 4]] #=> ["uno", 2.0 , [3, 4]]
+```
+
+Tambien se puede crear llamando al constructor de la clase Array con
+cero, uno o dos parametros; donde el primero denota la dimension del
+arreglo y el segundo el objeto por defecto que habra en cada
+indice. En caso se ser llamado sin parametros inicializa un arreglo
+vacio.
+
+``` ruby
+Array.new #=> []
+Array.new(2) #=> [nil,nil]
+Array.new(2,true) #=> [true,true]
+```
+
+El ultimo metodo, popula el arreglo con las referencias **al mismo
+objeto**. Es posible crear un arreglo con distintos objetos pasandole
+un bloque al constructor de la siguiente manera.
+
+```ruby
+Array.new(4) {|i| i.to_s } #=> [ "1", "2", "3", "4" ]
+```
+
+- Diccionario o hash (Hash)
+- String (String)
+- Símbolo (Symbol)
+2. ¿Qué devuelve la siguiente comparación? ¿Por qué?
+3. Escribí una función llamada reemplazar que reciba un String y que busque y reemplace
+en el mismo cualquier ocurrencia de { por do\n y cualquier ocurrencia de } por \nend, de
+modo que convierta los bloques escritos con llaves por bloques multilínea con do y end.
+Por ejemplo:
+4. Escribí una función que convierta a palabras la hora actual, dividiendo en los siguientes
+rangos los minutos:
+Si el minuto está entre 0 y 10, debe decir "en punto",
+si el minuto está entre 11 y 20, debe decir "y cuarto",
+si el minuto está entre 21 y 34, debe decir "y media",
+si el minuto está entre 35 y 44, debe decir "menos veinticinco" (de la hora
+siguiente),
+si el minuto está entre 45 y 55, debe decir "menos cuarto" (de la hora siguiente),
+y si el minuto está entre 56 y 59, debe decir "casi las" (y la hora siguiente)
+Tomá como ejemplos los siguientes casos:
+ 'TTPS Ruby'.object_id == 'TTPS Ruby'.object_id
+reemplazar("3.times { |i| puts i }")
+# => "3.times do\n |i| puts i \nend"
