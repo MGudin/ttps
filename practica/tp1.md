@@ -157,13 +157,101 @@ Array.new(4) {|i| i.to_s } #=> [ "1", "2", "3", "4" ]
 ```
 
 - Diccionario o hash (Hash)
+
+[De la documentacion](https://ruby-doc.org/core-2.4.1/Hash.html)
+El diccionario es una estructura de datos del tipo clave-valor, donde
+las claves deben ser unicas y pueden ser cualquier tipo de objeto.
+
+Existen varias formas de crear un arrgelo. Dentro de las formas
+literales encontramos:
+
+```ruby
+{ "hola" => "hola", "que tal?" => "bien"} #=> { "hola" => "hola","quetal?" => "bien"} 
+# pueden utilizarse simbolos como claves
+{ :hola => "hola, :quetal => "bien" } #=> { :hola => "hola, :quetal=>"bien" }
+# o bien
+{ hola: "hola", quetal: "bien"} #=> {:hola=>"hola", :quetal=>"bien"}
+```
+
+Tambien pueden crearse invocando al constructor de la clase Hash que
+puede recibir un argumento que denota el valor por defecto que
+se devuelve en caso que no exista la clave especificada.
+
+```ruby
+h = Hash.new() #=> {}
+i = Hash.new("no existe la clave") #=> {}
+h["clave"] #=> nil
+i["clave"] #=> "no existe la clave"
+#finalmente puede establecerse el valor por defecto
+#dinamicamente.
+h.default = 0
+h["clave"] #=> 0
+```
+
 - String (String)
+
+[De la documentacion](https://ruby-doc.org/core-2.4.1/String.html)
+Los string son objetos que manipulan secuencias de bytes que
+tipicamente representan caracteres.
+
+La clase String contiene metodos que manipulan el propio objeto que
+recibe el mensaje y otros que devuelven una instancia de un nuevo
+objeto String; los primeros son aquellos que terminan con "!" y los
+segundos son el resto. Por ello debe tenerse especial cuidado al manipular
+este tipo de objetos. 
+
+La forma literal de crear un string es mediante comillas(simples o
+dobles)
+
+```ruby
+"ruby" #=> "ruby"
+'ruby' #=> "ruby"
+```
+
+Tambien se pueden crear invocando al constructor de la clase String
+que puede recibir hasta 3 parametros. 
+
+*str* -> El string que se almacena.
+
+*encoding* -> Especifica la codificacion del string
+
+*capacity* -> Indica la capacidad del buffer interno que se utilizara
+para almacenar el string. Muy util cuando se desea perfomance.
+
+
+```ruby
+r = String.new(str="Ruby") #=> "Ruby"
+sin_str = String.new("Ruby") #=> "Ruby"
+```
+
 - Símbolo (Symbol)
+
+[De la documentacion](https://ruby-doc.org/core-2.4.1/Symbol.html)
+
+Un simbolo es una representacion de un objeto dentro del interprete
+ruby. Mientras que un nombre puede ser de distintos tipos segun el
+contexto en el que se encuentre, un simbolo sera el mismo objeto(hara
+referencia siempre al mismo objeto) durante la ejecucion del programa
+sin importar su contexto.
+
+Se crean de forma literal, dicho de otra forma, la clase Symbol no
+tiene un constructor.
+
+```ruby
+:"esto es un simbolo" #=> :"esto es un simbolo"
+:ttps #=> :ttps
+:ttps.object\_id #=> 1164188
+:ttps.object\_id #=> 1164188
+"ttps".object\_id #=> 47423746712840
+"ttps".object\_id #=> 47423746250580
+```
+
 2. ¿Qué devuelve la siguiente comparación? ¿Por qué?
+
 3. Escribí una función llamada reemplazar que reciba un String y que busque y reemplace
 en el mismo cualquier ocurrencia de { por do\n y cualquier ocurrencia de } por \nend, de
 modo que convierta los bloques escritos con llaves por bloques multilínea con do y end.
-Por ejemplo:
+
 4. Escribí una función que convierta a palabras la hora actual, dividiendo en los siguientes
 rangos los minutos:
 Si el minuto está entre 0 y 10, debe decir "en punto",
@@ -173,7 +261,3 @@ si el minuto está entre 35 y 44, debe decir "menos veinticinco" (de la hora
 siguiente),
 si el minuto está entre 45 y 55, debe decir "menos cuarto" (de la hora siguiente),
 y si el minuto está entre 56 y 59, debe decir "casi las" (y la hora siguiente)
-Tomá como ejemplos los siguientes casos:
- 'TTPS Ruby'.object_id == 'TTPS Ruby'.object_id
-reemplazar("3.times { |i| puts i }")
-# => "3.times do\n |i| puts i \nend"
