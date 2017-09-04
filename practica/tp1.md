@@ -123,7 +123,7 @@ No se encuentra el repo.
 ### Ruby. Sintaxis y tipos basicos  ###
 
 1. Investigá y probá en un intérprete de Ruby cómo crear objetos de los siguientes tipos
-básicos usando literales y usando el constructor new (cuando sea posible):
+   básicos usando literales y usando el constructor new (cuando sea posible):
 
 - Arreglo (Array)
 
@@ -248,16 +248,76 @@ tiene un constructor.
 
 2. ¿Qué devuelve la siguiente comparación? ¿Por qué?
 
+```ruby
+'TTPS Ruby'.object\_id == 'TTPS Ruby'.object\_id
+```
+
+Devuelve false, porque los strings son objetos de tipo String y aunque
+contengan el mismo contenido son objetos distintos.
+
+
 3. Escribí una función llamada reemplazar que reciba un String y que busque y reemplace
-en el mismo cualquier ocurrencia de { por do\n y cualquier ocurrencia de } por \nend, de
-modo que convierta los bloques escritos con llaves por bloques multilínea con do y end.
+   en el mismo cualquier ocurrencia de { por do\n y cualquier ocurrencia de } por \nend, de
+   modo que convierta los bloques escritos con llaves por bloques multilínea con do y end.
+
+```ruby
+reemplazar("3.times { |i| puts i }")
+# => "3.times do\n |i| puts i \nend"
+```
+
+Se puede utilizar el metodo gsub de la clase String que a grandes
+rasgos toma una regex y la reemplaza por un string pasado por
+parametro. Dicho metodo devuelve una copia del string pasado por
+parametro. Entonces encadenando los metodos como a continuacion
+obtenemos el resultado esperado.
+
+[reemplazar.rb](./reemplazar.rb)
+```ruby
+def reemplazar(str="")
+    return str.gsub("{", "\n").gsub("}", "\nend")
+end
+```
 
 4. Escribí una función que convierta a palabras la hora actual, dividiendo en los siguientes
-rangos los minutos:
-Si el minuto está entre 0 y 10, debe decir "en punto",
-si el minuto está entre 11 y 20, debe decir "y cuarto",
-si el minuto está entre 21 y 34, debe decir "y media",
-si el minuto está entre 35 y 44, debe decir "menos veinticinco" (de la hora
-siguiente),
-si el minuto está entre 45 y 55, debe decir "menos cuarto" (de la hora siguiente),
-y si el minuto está entre 56 y 59, debe decir "casi las" (y la hora siguiente)
+   rangos los minutos:
+   - Si el minuto está entre 0 y 10, debe decir "en punto",
+   - si el minuto está entre 11 y 20, debe decir "y cuarto",
+   - si el minuto está entre 21 y 34, debe decir "y media",
+   - si el minuto está entre 35 y 44, debe decir "menos veinticinco" (de la hora
+     siguiente),
+   - si el minuto está entre 45 y 55, debe decir "menos cuarto" (de la hora siguiente),
+     y si el minuto está entre 56 y 59, debe decir "casi las" (y la hora siguiente)
+
+
+5. Escribí una función llamada contar que reciba como parámetro dos
+   string y que retorne la cantidad de veces que aparece el segundo
+   string en el primero, sin importar mayúsculas y minúsculas. Por
+   ejemplo:
+   
+```ruby
+    contar("La casa de la esquina tiene la puerta roja y la ventana blanca.","la")
+    #=>5
+```
+[contar.rb](./contar.rb)
+
+```ruby
+def contar(string, substring)
+  return string.scan(/#{substring}/i).count
+end
+```
+
+6. Modificá la función anterior para que sólo considere como aparición
+   del segundo string
+   cuando se trate de palabras completas. Por ejemplo:
+   
+```ruby
+contar_palabras("La casa de la esquina tiene la puerta roja y la ventana blanca.","la")
+#=>4
+```
+
+[contar\_palabras.rb](./contar_palabras.rb)
+```ruby
+def contar_palabras(string, substring)
+  return string.scan(/\b#{substring}\b/i).count
+end
+```
