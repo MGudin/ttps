@@ -307,8 +307,7 @@ end
 ```
 
 6. Modificá la función anterior para que sólo considere como aparición
-   del segundo string
-   cuando se trate de palabras completas. Por ejemplo:
+   del segundo string cuando se trate de palabras completas. Por ejemplo: 
    
 ```ruby
 contar_palabras("La casa de la esquina tiene la puerta roja y la ventana blanca.","la")
@@ -316,8 +315,46 @@ contar_palabras("La casa de la esquina tiene la puerta roja y la ventana blanca.
 ```
 
 [contar\_palabras.rb](./contar_palabras.rb)
+
 ```ruby
 def contar_palabras(string, substring)
   return string.scan(/\b#{substring}\b/i).count
 end
 ```
+
+7. Dada una cadena cualquiera, y utilizando los métodos que provee la
+   clase String, realizá las siguientes operaciones sobre el string:
+
+   - Imprimilo con sus caracteres en orden inverso.
+   - Eliminá los espacios en blanco que contenga.
+   - Convertí cada uno de sus caracteres por su correspondiente valor
+     ASCII.
+   - Cambiá las vocales por números (a por 4, e por 3, i por 1, o
+     por 0, u por 6).
+
+[ej7.rb](./ej7.rb)
+
+8. ¿Qué hace el siguiente código?
+
+```ruby
+[ :upcase,:downcase,:capitalize,:swapcase].map do | meth|
+        "TTPSRuby".send(meth)
+end
+```
+
+Tenemos un arreglo de simbolos que son metodos de la clase String. 
+El metodo map del array con el bloque ejecuta el mismo con cada
+elemento del array. 
+
+El metodo send de la clase object, recibe como parametro un simbolo
+que representa un metodo e invoca el metodo en la instancia que
+recibe el mensaje send.
+
+Por lo tanto, termina invocando los metodos:
+- upcase
+- downcase
+- capitalize
+- swapcase
+
+sobre el string "TTPS Ruby".
+
