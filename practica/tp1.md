@@ -447,3 +447,55 @@ def rot(string,n)
   end
 end
 ```
+13. Escribí un script en Ruby que le pida al usuario su nombre y lo
+    utilice para saludarlo imprimiendo en pantalla
+    ¡Hola,<nombre>!. Por ejemplo: 
+
+```bash
+$ ruby script.rb
+Porfavor,ingresá tu nombre:
+Matz
+¡Hola,Matz!
+```
+
+[De script.rb](./script.rb)
+```bash
+#!/usr/bin/env ruby
+
+p "Por favor, ingresa tu nombre"
+n=gets.chomp
+p "hola #{n}"
+```
+
+14. Dado un color expresado en notación RGB
+    (https://es.wikipedia.org/wiki/RGB) , debés calcular su
+    representación entera y hexadecimal, donde la notación entera se
+    define como red+green\*256+blue\*256\*256 y la hexadecimal como el
+    resultado de expresar en hexadecimal el valor de cada color y
+    concatenarlos en orden. Por ejemplo:
+
+```ruby
+notacion_hexadecimal([ 0,128,255] )
+#=>'#0080FF'
+notacion_entera([ 0,128,255] )
+#=>16744448
+```
+[De colores.rb](./colores.rb)
+
+```ruby
+def notacion_entera(array)
+  converted=0
+  array.map.with_index do |value, index|
+    converted = converted + value * (256**index)
+  end
+  converted
+end
+
+def notacion_hexa(array)
+  converted='#'
+  array.each do |i|
+    converted=converted+i.to_s(16)
+  end
+  converted
+end
+```
