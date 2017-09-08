@@ -358,3 +358,92 @@ Por lo tanto, termina invocando los metodos:
 
 sobre el string "TTPS Ruby".
 
+9. Escribí una función que dado un arreglo que contenga varios string
+   cualesquiera, retorne un nuevo arreglo donde cada elemento es la
+   longitud del string que se encuentra en la misma posición del
+   arreglo recibido como parámetro. Por ejemplo:
+
+```ruby
+longitud([ 'TTPS','Opción','Ruby','Cursada2015'] )
+#=>[4,6,4,12]
+```
+
+[longitud.rb](./logitud.rb)
+
+```ruby
+def longitud(array)
+  length=[]
+  array.map{ |str| length.push(str.length)}
+  return length
+end
+```
+
+10. Escribí una función llamada a\_ul que reciba un Hash y retorne un
+    String con los pares de clave/valor del hash formateados en una
+    lista HTML <ul>. Por ejemplo:
+    
+```ruby
+a_ul({perros:1,gatos:1,peces:0})
+#=>"<ul><li>perros:1</li><li>gatos:1</li><li>peces:0</li></ul>"
+```
+
+[a\_ul.rb](./a_ul.rb)
+
+```ruby
+def wrap_in_tags(tag, text="")
+  "<#{tag}>#{text}</#{tag}>"
+end
+
+def to_ul(hash)
+  html=""
+  hash.each do |key, value|
+    html=html+wrap_in_tags("li",key.to_s+":"+value.to_s)
+  end
+  p wrap_in_tags("ul", html)
+end
+```
+
+11. Escribí una función llamada rot13 que encripte un string recibido
+como parámetro utilizando el algoritmo ROT13
+(https://es.wikipedia.org/wiki/ROT13) . Por ejemplo: 
+
+```ruby
+rot13("¡Bienvenidos a la cursada 2015 de TTPS Opción Ruby!")
+#=>"¡Ovrairavqbf n yn phefnqn 2015 qr GGCF Bcpvóa Ehol!"
+```
+
+Resolucion general en ejercicio 12
+
+
+12. Escribí una función más genérica, parecida a la del ejercicio 
+    anterior, que reciba como parámetro un string y un número n, y que
+    realice una rotación de n lugares de las letras del string y
+    retorne el resultado. Por ejemplo: 
+
+```ruby
+rot("¡Bienvenidos a la cursada 2015 de TTPS Opción Ruby!", 13)
+#=>"¡Ovrairavqbf n yn phefnqn 2015 qr GGCF Bcpvóa Ehol!"
+```
+[De rot.rb](./rot.rb)
+
+```ruby
+def create_association_table(n)
+  alphabet=("a".."z").to_a
+  uppercase_alphabet=("A".."Z").to_a
+  downcase_hash = Hash[alphabet.zip(alphabet.rotate(n))]
+  upcase_hash = Hash[uppercase_alphabet.
+                      zip(uppercase_alphabet.rotate(n))]
+  downcase_hash.merge(upcase_hash)
+end
+
+def encript(char, table)
+  table[char] || char
+end
+  
+def rot(string,n)
+  table = create_association_table(n)
+  string.each_char.inject("") do |encripted, char|
+    encripted + encript(char,table)
+  end
+end
+```
