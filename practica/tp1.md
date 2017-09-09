@@ -499,3 +499,54 @@ def notacion_hexa(array)
   converted
 end
 ```
+
+15. Investigá qué métodos provee Ruby para:
+
+    - Conocer la lista de métodos de una clase.
+    <clase>#methods -> arreglo de metodos de la clase
+    
+    - Conocer la lista de métodos de instancia de una clase.
+    <clase>#instance_methods -> arreglo con los metodos de instancia
+    de la clase
+    
+    - Conocer las variables de instancia de una clase.
+    Para conocer las variables de instancia, la clase debe ser
+    inicializada. Por lo tanto el metodo no se puede enviar a una
+    clase, sino a un objeto instanciado. 
+    El mensaje es #instance_variables y devuelve un array con las
+    variables de instancia.
+    
+    - Obtener la lista de ancestros (superclases) de una clase.
+    <clase>#ancestors devuelve un arreglo con las clases ancestro.
+    
+16. Escribí una función que encuentre la suma de todos los números
+    naturales múltiplos de 3 ó 5 menores que un número tope que reciba
+    como parámetro. 
+
+[De multiplos.rb](./multiplos.rb)
+
+```ruby 
+# Agrego dinamicamente el metodo divisible a la clase Integer.
+# Dicho metodo devuelve true si el numero es divisible por n, lo que
+# indica que es un multiplo de n.
+
+class Integer
+  def divisible?(n)
+    true if self.remainder(n) == 0
+  end
+end
+
+def suma_multiplos(n)
+  multiples=(1..n).to_a.select do |i|
+    i.divisible?(3) || i.divisible?(5)
+  end
+  multiples.sum
+end
+```
+
+17. Cada nuevo término en la secuencia de Fibonacci es generado
+    sumando los 2 términos anteriores. Los primeros 10 términos son:
+    1, 1, 2, 3, 5, 8, 13, 21, 34, 55. Considerando los términos en la
+    secuencia de Fibonacci cuyos valores no exceden los 4 millones,
+    encontrá la suma de los términos pares.
+    
