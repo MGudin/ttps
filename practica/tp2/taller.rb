@@ -49,7 +49,7 @@ class Auto < Vehiculo
     @en_marcha=(super and poner_en_marcha)
   end
 
-  # private
+  private
   def poner_en_marcha
     !@freno_de_mano and @punto_muerto
   end

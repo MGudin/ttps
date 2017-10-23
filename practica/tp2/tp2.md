@@ -303,3 +303,394 @@ module Reverso
 
 end
 ```
+
+
+4.
+
+5. Dada la siguiente clase abstracta GenericFactory, implementá
+   subclases de la misma que permitan la creación de instancias de dichas
+   clases mediante el uso del método de clase .create, de manera tal que
+   luego puedas usar esa lógica para instanciar objetos sin invocar
+   directamente el constructor new.
+   
+```ruby
+class GenericFactory
+    def self.create(**args)
+        new(**args)
+    end
+    
+    def initialize(**args)
+        raise NotImplementedError
+    end
+end
+```
+
+El ::create hace un llamado a ::new, quien implicitamente hace un
+llamado a #initialize. Como en la clase GenericFactory dicho elemento
+levanta un NotImplementedError. Cualquier subclase debera redefinir el
+metodo para que pueda ser instanciada.
+
+Por ejemplo de [generic_factory.rb](./generic_factory.rb)
+
+```ruby
+class SomeClass < GenericFactory
+  def initialize(**args)
+    p "hola!"
+  end
+end
+```
+
+6. Modificá la implementación del ejercicio anterior para que
+   GenericFactory sea un módulo que se incluya como Mixin en las
+   subclases que implementaste. ¿Qué modificaciones tuviste que hacer
+   en tus clases? 
+
+Para este ejercicio GenericFactory es un modulo. Por lo tanto, tengo
+dos formas de implementarlo.
+    1. Crear un modulo con metodos de clase y otro con metodos de
+    instancia. Luego utilizar extend e include respectivamente en la
+    clase hija.
+    2. Crear el modulo de forma tal que dentro del mismo definimos
+    otro modulo con metodos de clase y utilizar el hook included.
+
+De [generic_factory_mixin.rb](./generic_factory_mixin.rb)
+
+```ruby
+module GenericFactory
+
+  def initialize(**args)
+    raise NotImplementedError
+  end
+
+  module ClassMethods
+    def create(**args)
+      new(**args)
+    end
+  end
+  
+  def self.included(base)
+    base.extend(ClassMethods)
+  end
+end
+
+
+class CreateMethodClass
+  include GenericFactory
+
+  def initialize(**args)
+    p "se incluyo GenericFactory como modulo"
+  end
+end
+```
+
+7. Extendé las clases TrueClass y FalseClass para que ambas respondan
+   al método de instancia opposite, el cual en cada caso debe retornar
+   el valor opuesto al que recibe la invocación al método. Por
+   ejemplo: 
+
+```ruby
+false.opposite
+#=>true
+true.opposite
+#=>false
+true.opposite.opposite
+#=>true
+```
+
+Primero creamos el modulo [Opposite](./opposite):
+
+```ruby
+module Opposite
+  def opposite
+    not self
+  end
+end
+```
+
+Luego se lo agregamos dinamicamente a TrueClass y FalseClass mediante
+el metodo #include(Opposite).
+
+8. Analizá el script Ruby presentado a continuación e indicá:
+
+```ruby
+VALUE= 'global'
+module A
+    VALUE= 'A'
+    class B
+        VALUE= 'B'
+        def self.value
+            VALUE
+        end
+
+        def value
+            'iB'
+        end
+    end
+    
+    def self.value
+        VALUE
+    end
+end
+
+class C
+    class D
+        VALUE= 'D'
+        def self.value
+            VALUE
+        end
+    end
+    module E
+        def self.value
+            VALUE
+        end
+    end
+    def self.value
+        VALUE
+    end
+end
+    
+class F < C
+    VALUE= 'F'
+end
+```
+
+1. ¿Qué imprimen cada una de las siguientes sentencias? ¿De dónde está
+   obteniendo el valor?
+   
+   1. puts A.value
+   Imprime "A" ya que esta llamando al metodo definido como self.value
+   dentro del modulo A. Dicho metodo devuelve VALUE que se encuentra
+   definido como A
+   
+   2. puts A::B.value
+   Al hacer A::B.value se esta invocando al metodo de clase value de
+   B, que se encuentra dentro del namespace del modulo A. Por lo
+   tanto, viendo la definicion del metodo self.value y teniendo en
+   cuenta que se inicializa la variable como "B", imprime "B".
+   
+   3. puts C::D.value
+   En forma similar al punto anterior imprime D. La unica diferencia
+   es que la clase D se encuentra definida dentro de la clase C. Como
+   una clase es en esencia un modulo, funciona como un namespace.
+   
+   4. puts C::E.value
+   En este caso, el lookup de la variable es como sigue: 
+   - primero se busca en el modulo E, no se encuentra definido.
+   - Luego se busca en la Clase C, donde tampoco se encuentra
+     definida.
+   - Finalmente obtiene el valor global.
+   Entonces imprime "global"
+   
+   5. puts F.value
+   Devuelve "global", ya que aunque F tenga definida la variable se
+   ejecuta el metodo de C quien no lo tiene definido y lo sale a
+   buscar al scope global.
+   
+2. ¿Qué pasaría si ejecutases las siguientes sentencias? ¿Por qué?
+
+    1. puts A::value
+    Devuelve "A", ya que se esta buscando el valor de value en el
+    namespace de A.
+    
+    2. puts A.new.value
+    Devuelve un NoMethodError. Como A es un modulo, no se puede
+    instanciar como si fuese una clase. **Moraleja:** Una clase es un
+    modulo, un modulo no es una clase.
+    
+    3. puts B.value
+    Tira un unitialized constant, pues B esta definida solo dentro del
+    scope de A.
+    
+    4. puts C::D.value
+    Imprime "D". No hay nada mas que lo que ya se explico en el
+    ejercicio previo
+
+    5. puts C.value
+    "global"
+    
+    6. puts F.superclass.value
+    F.superclass hace referencia a C. Como C no tiene definido el
+    value, devuelve "global".
+
+## Bloques
+
+1. Escribí un método da\_nil? que reciba un bloque, lo invoque y
+   retorne si el valor de retorno del bloque fue nil. Por ejemplo:
+   
+```ruby
+da_nil?{}
+#=>true
+da_nil? do
+'Algo distinto de nil'
+end
+#=>false
+```
+
+De [danil.rb](./danil.rb)
+
+```ruby
+def da_nil?
+  if yield
+    false
+  else
+    true
+  end
+end
+```
+
+2. Implementá un método que reciba como parámetros un Hash y Proc, y
+   que devuelva un nuevo Hash cuyas las claves sean los valores del
+   Hash recibido como parámetro, y cuyos valores sean el resultado de
+   invocar el Proc con cada clave del Hash original. Por ejemplo:
+   
+```ruby
+hash= {'clave'= > 1,:otra_clave= > 'valor'}
+procesar_hash(hash,- > (x){x. to_s. upcase})
+#=>{1=>'CLAVE','valor'=>'OTRA_CLAVE'}
+```
+
+Utilizamos el metodo invert para cambiar claves por keys y viceversa
+en el hash. Luego transform_values para invocar el bloque que
+transforma los valores del hash.
+
+De [procesar_hash.rb](./procesar_hash.rb)
+
+```ruby
+def procesar_hash(aHash, aProc)
+  aHash.invert.transform_values! do |value|
+    aProc.call(value)
+  end
+end
+```
+
+3. Implementá un método que reciba un número variable de parámetros y
+   un bloque, y que al ser invocado ejecute el bloque recibido
+   pasándole todos los parámetros que se recibieron encapsulando todo
+   esto con captura de excepciones de manera tal que si en la
+   ejecución del bloque se produce alguna excepción, proceda de la
+   siguiente forma: 
+   
+   - Si la excepción es de clase RuntimeException, debe imprimir en
+   pantalla "Algo salió mal...", y retornar :rt.
+   - Si la excepción es de clase NoMethodError, debe imprimir
+   "Noencontréunmétodo:" más el mensaje original de la excepción
+   que se produjo, y retornar :nm.
+   - Si se produce cualquier otra excepción, debe imprimir en pantalla
+   "¡No sé qué hacer!", y relanzar la excepción que se produjo.
+   
+   En caso que la ejecución del bloque sea exitosa, deberá retornar
+   :ok.
+   
+   **Tips:** Leer sobre las sentencias raise y rescue.
+   
+Las excepciones en ruby se tratan encerrando el bloque de codigo entre
+begin end. Dentro de estos dos se pueden tratar los errores usando la
+sentencia rescue ClaseDeError. Tambien se puede utilizar un else, en
+caso de que la ejecucion del codigo encerrado no genere ninguna
+excepcion.
+
+Dentro del rescue podemos hacer referencia a la excepcion mediante la
+notacion '=>' y acceder a las propiedades del objeto que representa la
+excepcion.
+
+De [exceptions](./exceptions.rb)
+
+```ruby
+def test_exceptions(*args)
+  begin
+    yield args
+  rescue RuntimeError
+    p "Algo malio sal"
+    :rt
+  rescue NoMethodError => e
+    p "No encontre un metodo: " + e.message
+    :nm
+  rescue Exception => e
+    p "no se que hacer"
+    raise e
+  else 
+    :ok
+  end
+end
+```
+
+## Enumeradores
+
+1. Si no lo hiciste de esa forma en la práctica 1, escribí un
+   enumerador que calcule la serie de Fibonacci.
+   
+Usando el constructor de enumerator que recibe un bloque.
+
+De [fibonnacci_enum](./fibonnacci_enum.rb)
+
+```ruby
+FIBONACCI = Enumerator.new do |yielded|
+  a=b=1
+  loop do
+    yielded << a
+    a,b = b,a+b
+  end
+end
+```
+
+2. ¿Qué son los lazy enumerators? ¿Qué ventajas les ves con respecto
+   al uso de los enumeradores que no son lazy? **Tip:** Analizalo pensando
+   en conjuntos grandes de datos. 
+   
+De
+[Lazy enumerators](http://patshaughnessy.net/2013/4/3/ruby-2-0-works-hard-so-you-can-be-lazy)
+(se refiere a la version 2.0 pero lo importante son los conceptos):
+
+Existe una relacion entre el modulo Enumerable y
+Enumerator. Enumerable provee metodos para tratar con objetos de forma
+tal que se pueda sortear, buscar, seleccionar... etc. Dichos metodos
+son el collect, select, any?... etc.
+Enumerator es un objeto que produce datos de cierta forma.
+Entonces, podria decirse que los metodos de enumerable consumen datos
+generados por enumerator.
+
+Ahora bien, los enumerators producen datos y por como funciona ruby,
+al encadenar metodos(supongamos un collect sobre un arreglo) se
+ejecuta el metodo, se devuelve un arreglo sobre el cual operan los
+siguientes metodos, si hubiese. El problema es que si el arreglo que
+devuelve el collect por algun motivo es infinito, no se ejecutaran
+nunca los siguientes metodos.
+
+De ahi que se introduce en ruby la lazy evaluation, en donde se
+modifica este flujo de datos de forma tal que ya no se pasan entre
+metodos arreglos de resultados. Sino que se van pasando elemento a
+elemento, lo que posibilita iterar y operar sobre conjuntos de datos
+infinitos, en donde el ultimo metodo de la cadena es quien tiene el
+control de finalizacion.
+
+Su ventaja resulta evidente con lo expuesto anteriormente, para
+conjuntos de datos muy grandes puede operarse sobre los mismos incluso
+antes de finalizar la iteracion, incluso puede operarse sobre un
+conjunto infinito.
+
+3. Extendé la clase Array con el método randomly que funcione de la
+   siguiente manera:
+   
+   - Si recibe un bloque, debe invocar ese bloque con cada uno de los
+   elementos del arreglo en orden aleatorio.
+   
+   - Si no recibe un bloque, debe devolver un enumerador que va
+   arrojando, de a uno, los elementos del arreglo en orden aleatorio.
+   
+De [randomly](./randomly.rb)
+
+```ruby
+class Array
+
+  def randomly
+    ## como mandarle un bloque al each condicionalmente??
+    enum = shuffle.to_enum
+    if block_given?
+      shuffle.each {|e| yield e }
+    else
+      enum
+    end
+  end
+end
+```
+
