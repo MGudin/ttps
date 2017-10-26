@@ -8,27 +8,49 @@ module Countable
   
   module ClassMethods
     def count_invocations_of *args
-      @@tracked_methods = args
+      @@tracked_methods = {}
+      args.each do |arg|
+        @@tracked_methods[arg] = 0
+      end
+      wrap_instance_methods args
     end
 
-    alias_method :new_initialize, :initialize
+    def tracked_methods
+      @@tracked_methods
+    end
 
-    def initialize
-      p "entro al initialize nuevo"
-      old_initialize
+    def tracked_methods(key)
+      @@tracked_methods[key]
+    end
+    private
+    def wrap_instance_methods methods
+      methods.each do |method|
+        # get a new name for method
+        renamed_method = rename_method(method,"old_")
+        # alias the method with the name generated
+        alias_method  renamed_method, method
+        # redefine the method. Decorate it to count
+        # it invocation.
+        define_method(method) do
+          @@tracked_methods[method] += 1
+          method(renamed_method).call
+        end
+      end
+    end
+
+    def rename_method method_symbol, prepend="", append=""
+      (prepend.to_s + method_symbol.to_s + append.to_s).to_sym
     end
   end
 
   
   def invoked? sym
+    self.class.tracked_methods(sym) != 0
   end
 
   def invoked sym
+    self.class.tracked_methods(sym)
   end
-
-  ## class variables -> debo definirla si o si?
-  @@tracked_methods = []
-  ## instance variables
     
 end
 
@@ -36,17 +58,13 @@ class SimpleClass
 
   include Countable
 
-  def initialize
-    p "entro al initialize original"
-  end
-  
   def salute
     p "hey you"
   end
 
-  def salute_name name
-    p "hi #{name}!"
+  def dismiss
+    p "Goodbye"
   end
 
-  count_invocations_of :salute
+  count_invocations_of :salute, :dismiss
 end

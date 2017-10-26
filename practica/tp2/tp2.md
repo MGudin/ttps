@@ -43,7 +43,6 @@ end
 entrada= [ 10,9,1,2,3,5,7,8]
 #Dada`entrada',invocara#ordenarutilizandosusvaloresparaordenarlos
 ```
-*??? Preguntar*
 
 ```ruby
 ordenar(*entrada)
@@ -228,9 +227,6 @@ usando para poder realizar esto?
 Si, simplemente creo una clase que hereda de Vehiculo e implemento el
 metodo #arrancar que es el que utiliza la clase Taller.
 
-**Pregunta** Initialize. Si declaro en clase padre que no recibe nada
-y en clase hija que recibe argumento chilla.
-
 
 2. ¿Qué diferencia hay entre el uso de include y extend a la hora de
    incorporar un módulo en una clase?
@@ -305,7 +301,52 @@ end
 ```
 
 
-4.
+4. Implementá el Mixin Countable que te permita hacer que cualquier
+   clase cuente la cantidad de veces que los métodos de instancia
+   definidos en ella es invocado. Utilizalo en distintas clases, tanto
+   desarrolladas por vos como clases de la librería standard de Ruby,
+   y chequeá los resultados. El Mixin debe tener los siguientes
+   métodos: 
+   1. count_invocations_of(sym): método de clase que al invocarse
+      realiza las tareas necesarias para contabilizar las invocaciones
+      al método de instancia cuyo nombre es sym (un símbolo).
+   2. invoked?(sym): método de instancia que devuelve un valor
+      booleano indicando si el método llamado sym fue invocado al
+      menos una vez en la instancia receptora.
+   3. invoked(sym): método de instancia que devuelve la cantidad de
+      veces que el método identificado por sym fue invocado en la
+      instancia receptora.
+      
+De [countable.rb](./countable.rb), utilizo el metodo
+**alias_method** que tiene la siguiente firma;
+  
+```ruby
+alias_method nuevo_nombre nombre
+```
+
+Dicho metodo crea un alias, de forma tal que el metodo se puede llamar
+con el nuevo nombre. Una vez hecho esto, redefino el metodo de forma
+tal que lo decoro para que lleve la cuenta de sus llamados e invoco al
+metodo.
+
+```ruby
+    def wrap_instance_methods methods
+      methods.each do |method|
+        # get a new name for method
+        renamed_method = rename_method(method,"old_")
+        # alias the method with the name generated
+        alias_method  renamed_method, method
+        # redefine the method. Decorate it to count
+        # it invocation.
+        define_method(method) do
+          @@tracked_methods[method] += 1
+          method(renamed_method).call
+        end
+      end
+    end
+```
+
+
 
 5. Dada la siguiente clase abstracta GenericFactory, implementá
    subclases de la misma que permitan la creación de instancias de dichas
