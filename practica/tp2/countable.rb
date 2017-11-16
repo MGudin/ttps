@@ -10,16 +10,16 @@ module Countable
     def count_invocations_of *args
       @@tracked_methods = {}
       args.each do |arg|
-        @@tracked_methods[arg] = 0
+        @@tracked_methods[arg] = 0 if self.instance_methods.include?(arg.to_sym)
       end
-      wrap_instance_methods args
+      wrap_instance_methods @@tracked_methods.keys
     end
 
     def tracked_methods
       @@tracked_methods
     end
 
-    def tracked_methods(key)
+    def invocations_of key
       @@tracked_methods[key]
     end
     private
@@ -28,6 +28,7 @@ module Countable
         # get a new name for method
         renamed_method = rename_method(method,"old_")
         # alias the method with the name generated
+
         alias_method  renamed_method, method
         # redefine the method. Decorate it to count
         # it invocation.
@@ -45,26 +46,26 @@ module Countable
 
   
   def invoked? sym
-    self.class.tracked_methods(sym) != 0
+    self.class.invocations_of sym != 0
   end
 
   def invoked sym
-    self.class.tracked_methods(sym)
+    self.class.invocations_of sym
   end
     
 end
 
-class SimpleClass
+# class SimpleClass
 
-  include Countable
+#   include Countable
 
-  def salute
-    p "hey you"
-  end
+#   def salute
+#     p "hey you"
+#   end
 
-  def dismiss
-    p "Goodbye"
-  end
+#   def dismiss
+#     p "Goodbye"
+#   end
 
-  count_invocations_of :salute, :dismiss
-end
+#   count_invocations_of :salute, :dismiss
+# end
