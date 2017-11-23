@@ -115,7 +115,21 @@
    verdadera, donde cambio el valor de la variable y lanzo el
    retry. Si vuelve a levantarse la excepcion entrara por la falsa
    quien levantara otra excepcion.
-   
+
+   Por ejemplo:
+   ```ruby
+   # entrara una vez en el rescue por el if y reejecutara el bloque.
+   # la segunda vez no entra al if y termina la ejecucion
+   ret=true
+   begin
+     3/0
+   rescue
+     if ret
+       ret=false
+       retry
+     end
+   end
+   ```
 5. ¿Cuáles son las diferencias entre los siguientes métodos?
 
 ```ruby
