@@ -31,7 +31,8 @@
    **NotImplementedError**
    
    Se dispara cuando se intenta realizar una operacion que no es
-   soportada por el SO subyacente. Por ejemplo un fork.
+   soportada por el SO subyacente. Por ejemplo un fork en un SO que no
+   soporta dicha operacion.
    
    **StopIteration**
    
@@ -48,7 +49,7 @@
    
    **SystemExit**
    
-   Se levanta cuando se desea finalizar un script.
+   Se levanta cuando se finaliza un script mediante ctrl+c
    
 2. ¿Cuál es la diferencia entre raise y throw? ¿Para qué usarías una u
    otra opción?
@@ -98,13 +99,11 @@
         rescue TypeError
             p "Llegamos al final del arreglo"
         else
-            p "ups... sucedio un error"
-        ensure
             p e.to_s + "/" + arr[i+1].to_s
+        ensure
+            p "------------------------------"
         end
     end
-    
-    puts division
     ```
 4. ¿Para qué sirve retry? ¿Cómo evitarías caer en un loop infinito al
    usarla? 
